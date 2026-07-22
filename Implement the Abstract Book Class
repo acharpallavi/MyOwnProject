@@ -1,0 +1,20 @@
+    @Override
+    public boolean lend(User user) {
+        if (isAvailable && user.canBorrowBooks()) {
+            isAvailable = false;
+            System.out.println(title + " lent to: " + user.getName());
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void returnBook(User user) {
+        isAvailable = true;
+        System.out.println(title + " returned by: " + user.getName());
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return isAvailable;
+    }

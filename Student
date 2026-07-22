@@ -1,0 +1,31 @@
+1. Private field with public getter
+Create a class Student with a private variable name.
+Provide a public method getName() that returns the name.
+Test it from main().
+
+
+Public  class Student{
+    Private String Name;
+}
+Public Student(String name){
+    this.name = name;
+}
+public String getName(){
+    return name
+    }
+}
+
+2.Setter and Getter
+  Create a class BankAccount with private fields: accountNumber, balance.
+  Add public setters and getters.
+  In main(), set account number and balance, then print them.
+
+Public class BankAccount{
+    private string accountNumber;
+    private string balance;
+}
+public BankAccount{
+    this.accountNumber = accountNumber;
+    this.balance = balance;
+}
+

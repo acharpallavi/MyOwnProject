@@ -1,5 +1,6 @@
 package com.example.MyOwnProject.service;
 
+import com.example.MyOwnProject.dto.LoginResponse;
 import com.example.MyOwnProject.config.JwtUtil;
 import com.example.MyOwnProject.dto.LoginRequest;
 import com.example.MyOwnProject.dto.SignupRequest;
@@ -45,7 +46,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public String login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
 
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() ->
@@ -55,6 +56,15 @@ public class UserService {
             throw new BadCredentialsException("Invalid username or password");
         }
 
-        return jwtUtil.generateToken(user.getUsername());
+        String token = jwtUtil.generateToken(user.getUsername());
+
+        LoginResponse response = new LoginResponse();
+        response.setAccessToken(token);
+        response.setTokenType("Bearer");
+        response.setId(user.getId());
+        response.setUsername(user.getUsername());
+        response.setEmail(user.getEmail());
+
+        return response;
     }
 }

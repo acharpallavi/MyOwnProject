@@ -1,6 +1,7 @@
 package com.example.MyOwnProject.controller;
 
 import com.example.MyOwnProject.dto.LoginRequest;
+import com.example.MyOwnProject.dto.LoginResponse;
 import com.example.MyOwnProject.dto.SignupRequest;
 import com.example.MyOwnProject.service.UserService;
 import jakarta.validation.Valid;
@@ -22,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(userService.login(request));
     }
 

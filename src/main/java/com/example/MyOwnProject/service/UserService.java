@@ -1,5 +1,7 @@
 package com.example.MyOwnProject.service;
 
+import com.example.MyOwnProject.dto.RefreshTokenRequest;
+import com.example.MyOwnProject.model.RefreshToken;
 import com.example.MyOwnProject.dto.LoginResponse;
 import com.example.MyOwnProject.config.JwtUtil;
 import com.example.MyOwnProject.dto.LoginRequest;
@@ -18,14 +20,17 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
 
     public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
-                       JwtUtil jwtUtil) {
+                       JwtUtil jwtUtil,
+                       RefreshTokenService refreshTokenService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
+        this.refreshTokenService = refreshTokenService;
     }
 
     public void signup(@Valid SignupRequest request) {
@@ -56,10 +61,36 @@ public class UserService {
             throw new BadCredentialsException("Invalid username or password");
         }
 
-        String token = jwtUtil.generateToken(user.getUsername());
+        String accessToken = jwtUtil.generateToken(user.getUsername());
+
+        RefreshToken refreshToken =
+                refreshTokenService.createRefreshToken(user);
 
         LoginResponse response = new LoginResponse();
-        response.setAccessToken(token);
+
+        response.setAccessToken(accessToken);
+        response.setRefreshToken(refreshToken.getToken());
+        response.setTokenType("Bearer");
+        response.setId(user.getId());
+        response.setUsername(user.getUsername());
+        response.setEmail(user.getEmail());
+
+        return response;
+    }
+
+    public LoginResponse refreshToken(RefreshTokenRequest request) {
+
+        RefreshToken refreshToken =
+                refreshTokenService.verifyRefreshToken(request.getRefreshToken());
+
+        User user = refreshToken.getUser();
+
+        String accessToken = jwtUtil.generateToken(user.getUsername());
+
+        LoginResponse response = new LoginResponse();
+
+        response.setAccessToken(accessToken);
+        response.setRefreshToken(refreshToken.getToken());
         response.setTokenType("Bearer");
         response.setId(user.getId());
         response.setUsername(user.getUsername());
